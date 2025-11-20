@@ -1,0 +1,5 @@
+firstdraft/events/events_comp7_season27.parquet filter=lfs diff=lfs merge=lfs -text
+firstdraft/events/events_comp12_season27.parquet filter=lfs diff=lfs merge=lfs -text
+firstdraft/events/events_comp2_season27.parquet filter=lfs diff=lfs merge=lfs -text
+firstdraft/events/events_comp11_season27.parquet filter=lfs diff=lfs merge=lfs -text
+firstdraft/events/events_comp9_season27.parquet filter=lfs diff=lfs merge=lfs -text
