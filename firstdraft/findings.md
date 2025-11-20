@@ -120,3 +120,85 @@ Using the default decision threshold of **0.5**:
 - **FN (Goal predicted No Goal):** 966  
 - **TP (Goal predicted Goal):** 383  
 
+## Discussion
+
+### Strengths and Weaknesses of the Baseline Models
+
+**Strengths**
+
+- **High overall predictive performance**  
+  All models reached ~90% accuracy, showing that shot geometry + xG + player history are strong predictors.
+
+- **HistGradientBoosting performed best overall**  
+  It delivered the strongest combination of:
+  - Test accuracy (0.9084)  
+  - Precision (0.7119)  
+  - F1 (0.4059)  
+  - ROC–AUC (0.8670)  
+
+  This suggests that non-linear interactions (e.g., shot angle × distance × xG) matter.
+
+- **Good generalization**  
+  Training vs. test AUC values are close (train AUC: 0.8946 → test AUC: 0.8670), indicating a little overfitting.
+
+- **Player-level historical features add meaningful signal**  
+  Features such as conversion rate, xG over/under-performance, and career shot totals improved the model’s probability calibration.
+
+---
+
+**Weaknesses**
+
+- **Low recall for the “Goal” class**  
+  Even the best model only captures ~28% of real goals at the default 0.5 threshold.  
+  Goals are rare, and the model tends to be careful when classifying something as a goal.
+
+- **Class imbalance (89% No Goal)**  
+  If I were to always predict "no goal" I would have ~89% accuracy, which makes accuracy a little misleading.
+
+- **Hard-to-model Goals**  
+  In soccer there are a lot of goals that are statistically improbable. These type of goals are oddities be it long range goals, deflections, or incredibly tight angles if something is a goal or not can be extremely difficult to predict from data alone. There is also the case of goals which are givens and the stats favor a goal but players miss a wide open net or favorable position.
+
+- **Sparse categorical classes**  
+  Rare shot types like a bicycle kick or  backheel can end up producing noisy, which may lead to some more unreliable predictions.
+
+---
+
+### Possible Reasons for Errors or Bias
+
+**False Negatives (actual goals predicted as no goal)**
+
+- Low-xG or long-range shots that models almost always reject  
+- Missing contextual variables like keeper positioning, etc
+- Rare or unusual shot techniques with very few training samples  
+
+**False Positives (predicted goal but missed)**
+
+- High-xG but poorly executed shots  
+- Great shot geometry but saved by an crazy save by the goalkeeper  
+- Pressure or defensive variables not fully represented  
+
+---
+
+## Ideas for Final Report & Future Improvements
+
+### 1. Add More Match Context Features
+StatsBomb already provides additional fields that can meaningfully boost predictive power:
+
+- First-time shot vs. controlled  
+- Open-play vs. set-piece  
+- Last action before shot (pass, dribble, rebound, etc.)  
+- Expanded pressure indicators  
+
+---
+
+### 2. Decision Threshold and Add Basic Hyperparameter Search
+
+- Use ROC/PR curves to choose optimal probability thresholds  
+  - Best recall  
+  - Best precision  
+  - Best F1  
+- Perform hyperparameter tuning for  
+  - Logistic Regression  
+  - Random Forest  
+  - HistGradientBoosting  
+
